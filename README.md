@@ -1,6 +1,8 @@
 # Tugas 1 - Grafika Komputer
 Fidhia Ainun Khofifah
+
 05111940000203
+
 Grafika Komputer D
 
 Nama Benda : Deodorant
