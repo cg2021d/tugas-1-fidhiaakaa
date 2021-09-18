@@ -1,10 +1,5 @@
 # Tugas 1 - Grafika Komputer
-Fidhia Ainun Khofifah
-
-05111940000203
-
-Grafika Komputer D
-
+Fidhia Ainun Khofifah - 05111940000203
 
 Nama Benda : Deodorant
 ### Sisi Depan Atas
