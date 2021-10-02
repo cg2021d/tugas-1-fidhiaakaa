@@ -2,6 +2,10 @@
 Fidhia Ainun Khofifah - 05111940000203
 
 Nama Benda : Deodorant
+
+### Hasil
+![gif](https://github.com/cg2021d/tugas-1-fidhiaakaa/blob/32c212213bca1229d09e79abe5eaf69c656a0669/giphy.gif)
+
 ### Sisi Depan Atas
 ![deodorant](https://user-images.githubusercontent.com/90237196/133873211-52a05745-8c01-4579-abca-5ff4ccbba817.jpeg)
 ### Sisi Kanan Atas
