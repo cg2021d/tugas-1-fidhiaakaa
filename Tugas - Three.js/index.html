@@ -9,10 +9,13 @@
         background-color: black;
         text-align: center;
       }
+      h1 {
+        color: aliceblue;
+      }
     </style>
 </head>
 <body>
-    
+  <h1>Tugas Grafkom - Three.js</h1>
 </body>
 </html>
 
@@ -20,73 +23,100 @@
 <script>    
         let scene, camera, renderer;
         let cube, cone, plane, sphere, torus, octahedron;
+        let width, height, intensity, rectLight, rectLightHelper;
 
         let createCube = function() {
           geometry = new THREE.BoxGeometry(2, 2, 2, 2, 2, 2);
-			    material = new THREE.MeshBasicMaterial( { 
-            wireframe: true,
+			    material = new THREE.MeshNormalMaterial( { 
+            //wireframe: true,
             color: 0x00ff00 
           } );
-	  cube = new THREE.Mesh( geometry, material );
-	  scene.add( cube );
-          cube.position.set(7, 5, -2);
+			    cube = new THREE.Mesh( geometry, material );
+			    scene.add( cube );
+          cube.position.set(11, 6, -2);
+          
         }
 
         let createCone = function() {
           geometry = new THREE.ConeGeometry( 2, 4, 32 );
-          material = new THREE.MeshBasicMaterial( {
-            wireframe: true,
-            color: 0xffff00
+          material = new THREE.MeshPhongMaterial( {
+            //wireframe: true,
+            color: 0xffff00,
+            shininess: 100
           } );
           cone = new THREE.Mesh( geometry, material );
           scene.add( cone );
-          cone.position.set(0, 0, 0);
+          cone.position.set(2.5, 0, 0);
+          directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
+          scene.add( directionalLight );
         }
 
         let createPlane = function() {
           geometry = new THREE.PlaneGeometry( 3, 3, 5, 5 );
-          material = new THREE.MeshBasicMaterial( {
-            wireframe: true,
+          material = new THREE.MeshPhongMaterial( {
+            //wireframe: true,
             color: 0xffff, 
             side: THREE.DoubleSide
           } );
           plane = new THREE.Mesh( geometry, material );
           scene.add( plane );
           plane.position.set(-5, 5, 0);
+
+          light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+          scene.add( light );
         }
 
         let createSphere = function() {
           geometry = new THREE.SphereGeometry( 1, 2, 10 );
-          material = new THREE.MeshBasicMaterial( { 
-				    wireframe: true,
+          material = new THREE.MeshPhongMaterial( { 
+				    //wireframe: true,
             color: 0x808080 
 			    } );
           sphere = new THREE.Mesh( geometry, material );
           scene.add( sphere );
-          sphere.position.set(-5, -5, 0);
+          sphere.position.set(-5, -3, 0);
+          
+          light = new THREE.PointLight( 0xff0000, 1, 100 );
+          light.position.set( 50, 50, 50 );
+          scene.add( light );
         }
 
         let createTorus = function() {
           geometry = new THREE.TorusGeometry( 1, 0.1, 16, 100 );
-          material = new THREE.MeshBasicMaterial( { 
+          material = new THREE.MeshPhongMaterial( { 
             //wireframe: true,
-            color: 0xFF6600
+            color: 0x00FF00
           } );
           torus = new THREE.Mesh( geometry, material );
           scene.add( torus );
-          torus.position.set(10, -3, 0);
+          torus.position.set(13, -3, 0);
+
+          const spotLight = new THREE.SpotLight( 0xffffff );
+          spotLight.position.set( 100, 1000, 100 );
+
+          spotLight.castShadow = true;
+
+          spotLight.shadow.mapSize.width = 1024;
+          spotLight.shadow.mapSize.height = 1024;
+
+          spotLight.shadow.camera.near = 500;
+          spotLight.shadow.camera.far = 4000;
+          spotLight.shadow.camera.fov = 30;
+
+          scene.add( spotLight );
         }
 
         let createOctahedron = function() {
           geometry = new THREE.OctahedronGeometry(2.5);
-          material = new THREE.MeshBasicMaterial( {
-	          wireframe: true,
+          material = new THREE.MeshPhongMaterial( {
+	          //wireframe: true,
             color: 0xFF00FF
           } );
           octahedron = new THREE.Mesh(geometry, material);
           scene.add(octahedron);
-          octahedron.position.set(-10, 0, 0);
+          octahedron.position.set(-12, 2, 0);
         }
+
 
         // set up the environment - 
         // initiallize scene, camera, objects and renderer
@@ -99,6 +129,7 @@
             camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
             camera.position.z = 10;
             
+
             // 3. create and locate the object on the scene           
             createCube();
             createCone();
@@ -132,9 +163,9 @@
             sphere.rotation.x += 0.01;
             sphere.rotation.y += 0.01;
 
-            torus.rotation.x += 0.01;
-            torus.rotation.y += 0.01;
-            torus.rotation.z += 0.01;
+            torus.rotation.x += 0.05;
+            torus.rotation.y += 0.05;
+            torus.rotation.z += 0.05;
 
             octahedron.rotation.z += 0.01;
             octahedron.rotation.x += 0.01;
