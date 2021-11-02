@@ -1,4 +1,4 @@
-let scene, camera, renderer;
+let scene, camera, renderer, sphereCamera;
 function init() {
   scene = new THREE.Scene();
 
@@ -9,7 +9,7 @@ function init() {
   renderer.setSize(window.innerWidth,window.innerHeight);
 
   renderer.shadowMapEnabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.BasicShadowMap;
 
   document.body.appendChild(renderer.domElement);
 
@@ -17,16 +17,16 @@ function init() {
   let plane = new THREE.Mesh(
     new THREE.PlaneGeometry(20000, 20000, 300, 300),
     //new THREE.ShadowMaterial()
-    new THREE.MeshStandardMaterial({color: 0xFFFFFF})
+    new THREE.MeshPhongMaterial({color: 0xFFFFFF})
   );
-  plane.castShadow = false;
+  //plane.castShadow = true;
   plane.receiveShadow = true;
   plane.rotation.x = -Math.PI/2;
   scene.add(plane);
 
   //create object
-  const homeMat = new THREE.MeshStandardMaterial({color: 0xff9d40});
-  const roofMat = new THREE.MeshStandardMaterial({color: 0xffd5ad});
+  const homeMat = new THREE.MeshPhongMaterial({color: 0xff9d40});
+  const roofMat = new THREE.MeshPhongMaterial({color: 0xffd5ad});
   const homeGeo = new THREE.BoxGeometry(13, 2, 13);
   const roofGeo = new THREE.ConeGeometry(3, 0.5, 32);
 
@@ -57,26 +57,22 @@ function init() {
     }
   }
 
+  //add realistic reflection effect
+
+
   //add fog
-  scene.background = new THREE.Fog(0xDFE9F3, 1000, 5000);
+  //scene.background = new THREE.Fog(0xDFE9F3, 1000, 5000);
 
   //set light
   let light = new THREE.DirectionalLight(0xffffff, 1.0);
   light.position.set(0, 70, 100);
-  light.target.position.set(0, 0, 0);
   light.castShadow = true;
-  light.shadowDarkness = 0.5;
-  light.shadowCameraVisible = true;
-  
-  light.shadowCameraRight = 5;
-  light.shadowCameraLeft = -5;
-  light.shadowCameraTop = 5;
-  light.shadowCameraBottom = -5;
-
+  light.shadow.camera.near = 0.1;
+  light.shadow.camera.far = 25;
   scene.add(light);
 
-  light = new THREE.AmbientLight(0x101010);
-  scene.add(light);
+  alight = new THREE.AmbientLight(0xffffff, 0.3);
+  scene.add(alight);
 
   //set control
   let controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -101,15 +97,17 @@ function init() {
   materialArray.push(new THREE.MeshBasicMaterial( { map: texture_lf }));
 
   for (let i = 0; i < 6; i++)
-      materialArray[i].side = THREE.BackSide;
+    materialArray[i].side = THREE.BackSide;
   let skyboxGeo = new THREE.BoxGeometry( 10000, 10000, 10000);
   let skybox = new THREE.Mesh( skyboxGeo, materialArray );
-  scene.add( skybox );  
+  scene.add(skybox);
+
   animate();
 }
 
 function animate() {
   renderer.render(scene,camera);
+  //sphereCamera.updateCubeMap(renderer, scene);
   requestAnimationFrame(animate);
 }
 init();
