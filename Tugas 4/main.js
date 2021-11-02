@@ -8,57 +8,83 @@ function init() {
   renderer = new THREE.WebGLRenderer({antialias:true});
   renderer.setSize(window.innerWidth,window.innerHeight);
 
-  renderer.shadowMap.enabled = true;
-  //renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMapEnabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   document.body.appendChild(renderer.domElement);
 
+  //create floor
   let plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(100, 100, 1, 1),
+    new THREE.PlaneGeometry(20000, 20000, 300, 300),
+    //new THREE.ShadowMaterial()
     new THREE.MeshStandardMaterial({color: 0xFFFFFF})
   );
-  
   plane.castShadow = false;
   plane.receiveShadow = true;
   plane.rotation.x = -Math.PI/2;
   scene.add(plane);
 
-  let box = new THREE.Mesh(
-    new THREE.BoxGeometry(10, 10, 10),
-    new THREE.MeshStandardMaterial({color: 0xf7f6ab})
-  );
+  //create object
+  const homeMat = new THREE.MeshStandardMaterial({color: 0xff9d40});
+  const roofMat = new THREE.MeshStandardMaterial({color: 0xffd5ad});
+  const homeGeo = new THREE.BoxGeometry(13, 2, 13);
+  const roofGeo = new THREE.ConeGeometry(3, 0.5, 32);
 
-  box.position.set(0, 10, 0);
-  box.castShadow = true;
-  box.receiveShadow = true;
-  scene.add(box);
+  for(let x=0; x<15; ++x) {
+    for(let y=0; y<15; ++y) {
+      const home = new THREE.Mesh(homeGeo, homeMat);
+      const roof = new THREE.Mesh(roofGeo, roofMat);
+      home.scale.set(20, (Math.random()+1.0)*100.0, 20);
+      home.position.set(
+        15000.0*(Math.random()*2.0 - 1.0),
+        home.scale.y,
+        15000.0*(Math.random()*2.0 - 1.0)
+      );
+      roof.scale.copy(home.scale);
+      roof.scale.set(100, home.scale.y*5.0, 100);
+      roof.position.set(
+        home.position.x,
+        roof.scale.y/2,
+        home.position.z
+      );
+      home.castShadow = true;
+      home.receiveShadow = false;
+      roof.castShadow = true;
+      roof.receiveShadow = false;
 
-  let sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(6, 10, 6),
-    new THREE.MeshStandardMaterial({color: 0x91ffaf})
-  );
+      scene.add(home);
+      scene.add(roof);
+    }
+  }
 
-  sphere.position.set(20, 10, 20);
-  sphere.castShadow = true;
-  sphere.receiveShadow = true;
-  scene.add(sphere);
+  //add fog
+  scene.background = new THREE.Fog(0xDFE9F3, 1000, 5000);
 
-  //scene.fog = new THREE.Fog(0xDFE9F3, 0.0, 500.0);
-  scene.background = new THREE.Fog(0xDFE9F3,0.5);
-
-  let light = new THREE.DirectionalLight( 0xffffff );
-  light.position.set( 100, 50, 100 );
+  //set light
+  let light = new THREE.DirectionalLight(0xffffff, 1.0);
+  light.position.set(0, 70, 100);
   light.target.position.set(0, 0, 0);
   light.castShadow = true;
-  //light.shadow.mapSize.width = 2048;
-  //light.shadow.mapSize.height = 2048;
+  light.shadowDarkness = 0.5;
+  light.shadowCameraVisible = true;
+  
+  light.shadowCameraRight = 5;
+  light.shadowCameraLeft = -5;
+  light.shadowCameraTop = 5;
+  light.shadowCameraBottom = -5;
+
   scene.add(light);
 
+  light = new THREE.AmbientLight(0x101010);
+  scene.add(light);
+
+  //set control
   let controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.addEventListener('change', renderer);
-  //controls.minDistance = 500;
-  //controls.maxDistance = 1500;
+  controls.target.set(0, 20, 0);
+  controls.maxDistance = 10000;
   
+  //add texture for skybox
   let materialArray = [];
   let texture_ft = new THREE.TextureLoader().load( 'trance_ft.jpg');
   let texture_bk = new THREE.TextureLoader().load( 'trance_bk.jpg');
