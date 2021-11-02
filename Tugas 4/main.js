@@ -57,11 +57,8 @@ function init() {
     }
   }
 
-  //add realistic reflection effect
-
-
   //add fog
-  //scene.background = new THREE.Fog(0xDFE9F3, 1000, 5000);
+  scene.background = new THREE.Fog(0xDFE9F3, 1000, 5000);
 
   //set light
   let light = new THREE.DirectionalLight(0xffffff, 1.0);
@@ -101,6 +98,18 @@ function init() {
   let skyboxGeo = new THREE.BoxGeometry( 10000, 10000, 10000);
   let skybox = new THREE.Mesh( skyboxGeo, materialArray );
   scene.add(skybox);
+
+  //add realistic reflection effect
+  sphereCamera = new THREE.CubeCamera(1, 1000, 500);
+  sphereCamera.position.set(0, 100, 0);
+  scene.add(sphereCamera);
+  let sphereMaterial = new THREE.MeshBasicMaterial({
+    envMap: sphereCamera.renderTarget
+  });
+  let sphereGeo = new THREE.SphereGeometry(150, 50, 50);
+  let sphere = new THREE.Mesh(sphereGeo, sphereMaterial);
+  sphere.position.set(0, 900, 0);
+  scene.add(sphere);
 
   animate();
 }
